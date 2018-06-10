@@ -8,7 +8,6 @@ namespace phirSOFT.Applications.MusicStand
 {
     public class LogCreationStrategy : BuilderStrategy
     {
-
         public bool IsPolicySet { get; private set; }
 
         public override void PreBuildUp(IBuilderContext context)
@@ -27,20 +26,17 @@ namespace phirSOFT.Applications.MusicStand
 
         public override void PostBuildUp(IBuilderContext context)
         {
-            if (IsPolicySet)
-            {
-                context.Policies.Clear<IBuildPlanPolicy>(context.BuildKey);
-                IsPolicySet = false;
-            }
+            if (!IsPolicySet) return;
+            context.Policies?.Clear(context.BuildKey.Type, context.BuildKey.Name, typeof(IBuildPlanPolicy));
+            IsPolicySet = false;
         }
 
         private static Type GetLogType(IBuilderContext context)
         {
-            Type logType = null;
             IBuildTrackingPolicy buildTrackingPolicy = BuildTracking.GetPolicy(context);
-            if (buildTrackingPolicy == null || buildTrackingPolicy.BuildKeys.Count < 2) return logType;
+            if (buildTrackingPolicy == null || buildTrackingPolicy.BuildKeys.Count < 2) return null;
             object top = buildTrackingPolicy.BuildKeys.Pop();
-            logType = ((NamedTypeBuildKey)buildTrackingPolicy.BuildKeys.Peek()).Type;
+            Type logType = ((NamedTypeBuildKey) buildTrackingPolicy.BuildKeys.Peek()).Type;
             buildTrackingPolicy.BuildKeys.Push(top);
             return logType;
         }

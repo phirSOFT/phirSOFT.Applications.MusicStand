@@ -1,11 +1,10 @@
-﻿using System.Windows;
-
-namespace phirSOFT.Applications.MusicStand
+﻿namespace phirSOFT.Applications.MusicStand
 {
+    /// <inheritdoc cref="System.Windows.Window" />
     /// <summary>
-    /// Interaction logic for Shell.xaml
+    ///     Interaction logic for Shell.xaml
     /// </summary>
-    public partial class Shell : Window
+    public partial class Shell
     {
         public Shell()
         {

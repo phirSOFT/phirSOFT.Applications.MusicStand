@@ -12,13 +12,13 @@ using static SingleInstanceManager.SingleInstanceManager;
 namespace phirSOFT.Applications.MusicStand
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    ///     Interaction logic for App.xaml
     /// </summary>
-    public partial class App : PrismApplication
+    public partial class App
     {
         private static readonly Guid AppGuid;
-        private readonly AsyncManualResetEvent started = new AsyncManualResetEvent(false);
-        private SingleInstanceManager.SingleInstanceManager manager;
+        private readonly AsyncManualResetEvent _started = new AsyncManualResetEvent(set: false);
+        private SingleInstanceManager.SingleInstanceManager _manager;
 
         static App()
         {
@@ -29,7 +29,6 @@ namespace phirSOFT.Applications.MusicStand
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
         }
 
         protected override Window CreateShell()
@@ -39,42 +38,39 @@ namespace phirSOFT.Applications.MusicStand
 
         protected override void OnStartup(StartupEventArgs e)
         {
-
-            manager = CreateManager(AppGuid.ToString());
-            if (manager.RunApplication(e.Args))
+            _manager = CreateManager(AppGuid.ToString());
+            if (_manager.RunApplication(e.Args))
             {
-                manager.SecondInstanceStarted += async (sender, secondE) =>
+                _manager.SecondInstanceStarted += async (sender, secondE) =>
                 {
-                    await started.WaitAsync();
+                    await _started.WaitAsync();
 
                     var aggregator = Container.Resolve<IEventAggregator>();
                     aggregator.GetEvent<SecondInstanceStartedEvent>().Publish(secondE.CommandLineParameters);
                 };
                 base.OnStartup(e);
-                started.Set();
+                _started.Set();
             }
             else
             {
-                Environment.Exit(1);
+                Environment.Exit(exitCode: 1);
             }
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            manager.Shutdown();
+            _manager.Shutdown();
             base.OnExit(e);
         }
 
         protected override IContainerExtension CreateContainerExtension()
         {
-            var containerExtension = base.CreateContainerExtension();
-            ((IContainerProvider)containerExtension).GetContainer()
+            IContainerExtension containerExtension = base.CreateContainerExtension();
+            ((IContainerProvider) containerExtension).GetContainer()
                 .AddNewExtension<BuildTracking>()
                 .AddNewExtension<LogCreation>();
             return containerExtension;
         }
-
-
     }
 
     public class SecondInstanceStartedEvent : PubSubEvent<string[]>

@@ -1,4 +1,5 @@
 ﻿using System;
+using NLog;
 using Unity.Builder;
 using Unity.Policy;
 
@@ -6,13 +7,12 @@ namespace phirSOFT.Applications.MusicStand
 {
     public class LogBuildPlanPolicy : IBuildPlanPolicy
     {
-
         public LogBuildPlanPolicy(Type logType)
         {
             LogType = logType;
         }
 
-        public Type LogType { get;}
+        public Type LogType { get; }
 
         public void BuildUp(IBuilderContext context)
         {

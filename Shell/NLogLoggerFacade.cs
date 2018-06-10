@@ -1,4 +1,5 @@
 ﻿using System;
+using NLog;
 using Prism.Logging;
 
 namespace phirSOFT.Applications.MusicStand
@@ -32,7 +33,7 @@ namespace phirSOFT.Applications.MusicStand
                     level = LogLevel.Warn;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(category), category, null);
+                    throw new ArgumentOutOfRangeException(nameof(category), category, message: null);
             }
 
             _logger.Log(level, message);

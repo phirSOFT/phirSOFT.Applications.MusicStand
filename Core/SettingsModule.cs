@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Nito.AsyncEx.Synchronous;
+using phirSOFT.SettingsService;
 using phirSOFT.SettingsService.Json;
 using Prism.Ioc;
 using Prism.Logging;
@@ -13,7 +11,7 @@ using Prism.Modularity;
 
 namespace phirSOFT.Applications.MusicStand.Core
 {
-    
+    [PublicAPI]
     public class SettingsModule : IModule
     {
         private readonly ILoggerFacade _loggerFacade;
@@ -33,7 +31,7 @@ namespace phirSOFT.Applications.MusicStand.Core
 
             _loggerFacade.Log("Creating json settings service.", Category.Info, Priority.None);
             _loggerFacade.Log($"Loading settings from \"{settingsPath}\"", Category.Debug, Priority.None);
-            var settingsService = JsonSettingsService.Create(settingsPath).WaitAndUnwrapException();
+            ISettingsService settingsService = JsonSettingsService.Create(settingsPath).WaitAndUnwrapException();
             _loggerFacade.Log("Settings loaded", Category.Info, Priority.None);
 
             containerRegistry.RegisterInstance(settingsService);
@@ -43,7 +41,6 @@ namespace phirSOFT.Applications.MusicStand.Core
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
-            
         }
     }
 }
