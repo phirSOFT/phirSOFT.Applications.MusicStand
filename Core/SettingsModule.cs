@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using JetBrains.Annotations;
+using Nito.AsyncEx;
 using Nito.AsyncEx.Synchronous;
 using phirSOFT.SettingsService;
 using phirSOFT.SettingsService.Json;
@@ -40,7 +41,7 @@ namespace phirSOFT.Applications.MusicStand.Core
 
             _loggerFacade.Log("Creating json settings service.", Category.Info, Priority.None);
             _loggerFacade.Log($"Loading settings from \"{settingsPath}\"", Category.Debug, Priority.None);
-            ISettingsService settingsService = JsonSettingsService.Create(settingsPath).WaitAndUnwrapException();
+            ISettingsService settingsService = AsyncContext.Run(() => JsonSettingsService.Create(settingsPath));
             _loggerFacade.Log("Settings loaded", Category.Info, Priority.None);
 
             containerRegistry.RegisterInstance(settingsService);
