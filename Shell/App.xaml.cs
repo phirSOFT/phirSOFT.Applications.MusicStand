@@ -4,9 +4,11 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using Fluent;
 using Nito.AsyncEx;
+using phirSOFT.Applications.MusicStand.Core;
 using phirSOFT.FluentPrismAdapters;
 using Prism.Events;
 using Prism.Ioc;
+using Prism.Modularity;
 using Prism.Regions;
 using Prism.Unity;
 using Unity;
@@ -46,6 +48,13 @@ namespace phirSOFT.Applications.MusicStand
             regionAdapterMappings.RegisterMapping(typeof(RibbonTabItem), 
                 (IRegionAdapter)Container.Resolve(typeof(RibbonTabItemRegionAdapter)));
 
+        }
+
+        protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+        {
+            base.ConfigureModuleCatalog(moduleCatalog);
+            moduleCatalog.AddModule<SettingsModule>();
+            moduleCatalog.AddModule<CoreModule>();
         }
 
         protected override Window CreateShell()
