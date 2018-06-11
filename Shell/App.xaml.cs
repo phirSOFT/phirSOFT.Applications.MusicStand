@@ -2,9 +2,12 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using Fluent;
 using Nito.AsyncEx;
+using phirSOFT.FluentPrismAdapters;
 using Prism.Events;
 using Prism.Ioc;
+using Prism.Regions;
 using Prism.Unity;
 using Unity;
 using static SingleInstanceManager.SingleInstanceManager;
@@ -29,6 +32,20 @@ namespace phirSOFT.Applications.MusicStand
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+        }
+
+        protected override void ConfigureRegionAdapterMappings(RegionAdapterMappings regionAdapterMappings)
+        {
+            base.ConfigureRegionAdapterMappings(regionAdapterMappings);
+            regionAdapterMappings.RegisterMapping(typeof(Ribbon),
+                (IRegionAdapter)Container.Resolve(typeof(RibbonRegionAdapter)));
+            regionAdapterMappings.RegisterMapping(typeof(BackstageTabControl), 
+                (IRegionAdapter)Container.Resolve(typeof(BackstageTabControlRegionAdapter)));
+            regionAdapterMappings.RegisterMapping(typeof(RibbonMenu), 
+                (IRegionAdapter)Container.Resolve(typeof(RibbonMenuRegionAdapter)));
+            regionAdapterMappings.RegisterMapping(typeof(RibbonTabItem), 
+                (IRegionAdapter)Container.Resolve(typeof(RibbonTabItemRegionAdapter)));
+
         }
 
         protected override Window CreateShell()
