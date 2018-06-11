@@ -1,9 +1,31 @@
-﻿<Window x:Class="phirSOFT.Applications.MusicStand.Shell"
+﻿<fluent:RibbonWindow x:Class="phirSOFT.Applications.MusicStand.Shell"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fluent="urn:fluent-ribbon"
+        xmlns:regions="http://prismlibrary.com/"
         mc:Ignorable="d"
         Title="Shell" Height="450" Width="800">
-    <Grid />
-</Window>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <fluent:Ribbon>
+            <fluent:Ribbon.Menu>
+                <fluent:Backstage>
+                    <fluent:BackstageTabControl regions:RegionManager.RegionName="Backstage">
+
+                    </fluent:BackstageTabControl>
+                </fluent:Backstage>
+            </fluent:Ribbon.Menu>
+        </fluent:Ribbon>
+        
+        <ContentControl Grid.Row="1" regions:RegionManager.RegionName="Main"/>
+        
+        <fluent:StatusBar Grid.Row="2" regions:RegionManager.RegionName="StatusBar"/>
+    </Grid>
+</fluent:RibbonWindow>
