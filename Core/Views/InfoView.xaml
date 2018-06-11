@@ -1,0 +1,23 @@
+﻿<fluent:BackstageTabItem x:Class="phirSOFT.Applications.MusicStand.Core.Views.InfoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:fluent="urn:fluent-ribbon"
+             prism:ViewModelLocator.AutoWireViewModel="True" Header="Info">
+    <Grid>
+        <TextBlock Foreground="Black">
+            <Run FontSize="18" Text="{Binding ApplicationTitle, Mode=OneTime}"/>
+            <LineBreak/>
+            <InlineUIContainer>
+                <Line X1="0" X2="200" Stroke="Gray" StrokeThickness="2"/>
+            </InlineUIContainer>
+            <LineBreak/>
+            <Run FontSize="12">Version:</Run> <Run FontSize="12" Text="{Binding ApplicationVersion, Mode=OneTime}"/>
+            <LineBreak />
+            <Run FontSize="12">Sdk Version:</Run> <Run FontSize="12" Text="{Binding ContractVersion, Mode=OneTime}"/>
+            <LineBreak/>
+            <Run FontSize="12">Core Runtimer Version:</Run> <Run FontSize="12" Text="{Binding CoreVersion, Mode=OneTime}"/>
+        </TextBlock>
+    </Grid>
+</fluent:BackstageTabItem>
+

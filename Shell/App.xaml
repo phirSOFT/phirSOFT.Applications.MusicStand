@@ -4,6 +4,6 @@
                         xmlns:unity="http://prismlibrary.com/"
                         StartupUri="Shell.xaml">
     <Application.Resources>
-
+        <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml" />
     </Application.Resources>
 </unity:PrismApplication>
