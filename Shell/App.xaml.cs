@@ -36,11 +36,13 @@ namespace phirSOFT.Applications.MusicStand
         {
         }
 
+      
+
         protected override void ConfigureRegionAdapterMappings(RegionAdapterMappings regionAdapterMappings)
         {
             base.ConfigureRegionAdapterMappings(regionAdapterMappings);
-            regionAdapterMappings.RegisterMapping(typeof(Ribbon),
-                (IRegionAdapter)Container.Resolve(typeof(RibbonRegionAdapter)));
+            // regionAdapterMappings.RegisterMapping(typeof(Ribbon),
+            //    (IRegionAdapter)Container.Resolve(typeof(RibbonRegionAdapter)));
             regionAdapterMappings.RegisterMapping(typeof(BackstageTabControl), 
                 (IRegionAdapter)Container.Resolve(typeof(BackstageTabControlRegionAdapter)));
             regionAdapterMappings.RegisterMapping(typeof(RibbonMenu), 
@@ -93,9 +95,9 @@ namespace phirSOFT.Applications.MusicStand
         {
             IContainerExtension containerExtension = base.CreateContainerExtension();
             ((IContainerProvider) containerExtension).GetContainer()
-                .AddNewExtension<BuildTracking>()
                 .AddNewExtension<LogCreation>();
-            return containerExtension;
+
+            return new FilteredUnityContainer<IUnityContainer>((IContainerExtension<IUnityContainer>) containerExtension);
         }
     }
 
