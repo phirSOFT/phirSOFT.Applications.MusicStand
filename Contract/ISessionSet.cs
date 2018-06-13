@@ -9,6 +9,10 @@ namespace phirSOFT.Applications.MusicStand.Contract
     /// <summary>
     ///     Provides a set of elements (like songs) played during a session.
     /// </summary>
+    /// <remarks>
+    ///     The implementing interface only represents the direct children.
+    ///     To retrieve all items use the <see cref="GetFlatView"/> Method.
+    /// </remarks>
     public interface ISessionSet : IList<ISessionSetItem>
     {
         /// <summary>

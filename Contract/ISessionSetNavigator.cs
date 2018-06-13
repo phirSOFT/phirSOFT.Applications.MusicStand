@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace phirSOFT.Applications.MusicStand.Contract
 {
     /// <summary>
-    /// Navigates through a sesssion set
+    /// Navigates through a sesssion set.
     /// </summary>
     public interface ISessionSetNavigator
     {
@@ -30,7 +30,7 @@ namespace phirSOFT.Applications.MusicStand.Contract
         int Index { get; set; }
 
         /// <summary>
-        /// Moves to the first item in the session set.
+        /// Moves to the first non group item in the session set.
         /// </summary>
         /// <returns>Returns true, when the <see cref="Current"/> changed.</returns>
         bool MoveFirst();
@@ -42,19 +42,19 @@ namespace phirSOFT.Applications.MusicStand.Contract
         bool MoveUp();
 
         /// <summary>
-        /// Moves to the next item in the session set, if there is any.
+        /// Moves to the next non group item in the session set, if there is any.
         /// </summary>
         /// <returns>Returns true, when the <see cref="Current"/> changed.</returns>
         bool MoveNext();
 
         /// <summary>
-        /// Moves to the previous item in the session set, if there is any.
+        /// Moves to the previous non group item in the session set, if there is any.
         /// </summary>
         /// <returns>Returns true, when the <see cref="Current"/> changed.</returns>
         bool MovePrevious();
 
         /// <summary>
-        /// Moves to the last item in the session set.
+        /// Moves to the last non group item in the session set.
         /// </summary>
         /// <returns>Returns true, when the <see cref="Current"/> changed.</returns>
         bool MoveLast();
