@@ -41,6 +41,8 @@
     <Compile Include="Mocks\FlattenableLeaf.cs" />
     <Compile Include="Mocks\FlattenableMock.cs" />
     <Compile Include="Mocks\INode.cs" />
+    <Compile Include="Mocks\SessionSetItemGroupMock.cs" />
+    <Compile Include="Mocks\SessionSetItemMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
