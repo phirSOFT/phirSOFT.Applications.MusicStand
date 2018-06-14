@@ -51,7 +51,7 @@ namespace phirSOFT.Applications.MusicStand.Core
             {
                 if (CanMonitorAllChildren)
                 {
-                    return Count + (int)(_cachedChildrenCount ?? (_cachedChildrenCount =  _children.Sum(f => f.FlatCount)));
+                    return Count + (int)(_cachedChildrenCount ?? (_cachedChildrenCount = _children.Sum(f => f.FlatCount)));
                 }
                 return Count + _children.Sum(f => f.FlatCount);
             }
@@ -59,12 +59,14 @@ namespace phirSOFT.Applications.MusicStand.Core
 
         public IEnumerator<T> GetEnumerator()
         {
-            foreach ((bool singlenode, IReadOnlyList<T> content) in _items)
+            var currentNode = _items.First;
+            while (currentNode != null)
             {
-                if (singlenode)
-                    yield return (T) content;
-
-                foreach (T item in content) yield return item;
+                if (currentNode.Value.SingleNode)
+                    yield return (T)currentNode.Value.Content;
+                else
+                    foreach (T item in currentNode.Value.Content) yield return item;
+                currentNode = currentNode.Next;
             }
         }
 
@@ -80,13 +82,13 @@ namespace phirSOFT.Applications.MusicStand.Core
                 _items.AddLast((true, flattenable));
                 AddChild(flattenable);
             }
-            else if (_items.Last.Value.SingleNode)
+            else if (_items.Last?.Value.SingleNode ?? true)
             {
-                _items.AddLast((false, new List<T> {item}));
+                _items.AddLast((false, new List<T> { item }));
             }
             else
             {
-                ((List<T>) _items.Last.Value.Content).Add(item);
+                ((List<T>)_items.Last.Value.Content).Add(item);
             }
 
             Count++;
@@ -107,7 +109,7 @@ namespace phirSOFT.Applications.MusicStand.Core
 
         public bool Contains(T item)
         {
-            return IndexOf(item) > 0;
+            return IndexOf(item) >= 0;
         }
 
         public void CopyTo(T[] array, int arrayIndex)
@@ -123,11 +125,11 @@ namespace phirSOFT.Applications.MusicStand.Core
             foreach ((bool singleNode, IReadOnlyList<T> content) in _items)
                 if (singleNode)
                 {
-                    array[arrayIndex++] = (T) content;
+                    array[arrayIndex++] = (T)content;
                 }
                 else
                 {
-                    ((List<T>) content).CopyTo(array, arrayIndex);
+                    ((List<T>)content).CopyTo(array, arrayIndex);
                     arrayIndex += content.Count;
                 }
         }
@@ -137,15 +139,17 @@ namespace phirSOFT.Applications.MusicStand.Core
             LinkedListNode<(bool SingleNode, IReadOnlyList<T> Content)> node = _items.First;
             var currentIndex = 0;
 
+            bool searchForSingleNode = item is IFlattenable<T>;
+
             while (node != null)
             {
                 if (node.Value.SingleNode)
                 {
-                    if (_comparer.Equals((T) node.Value.Content, item))
+                    if (searchForSingleNode && _comparer.Equals((T)node.Value.Content, item))
                     {
                         _items.Remove(node);
                         Count--;
-                        RemoveChild((IFlattenable<T>) item);
+                        RemoveChild((IFlattenable<T>)item);
                         OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
                             item, currentIndex));
                         return true;
@@ -155,15 +159,20 @@ namespace phirSOFT.Applications.MusicStand.Core
                 }
                 else
                 {
-                    var list = (List<T>) node.Value.Content;
-                    int index = list.IndexOf(item);
-                    if (index > 0)
+
+                    var list = (List<T>)node.Value.Content;
+                    if (!searchForSingleNode)
                     {
-                        list.RemoveAt(index);
-                        Count--;
-                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
-                            item, currentIndex + index));
-                        return true;
+                        int index = list.IndexOf(item);
+                        if (index >= 0)
+                        {
+                            list.RemoveAt(index);
+                            Count--;
+                            OnCollectionChanged(new NotifyCollectionChangedEventArgs(
+                                NotifyCollectionChangedAction.Remove,
+                                item, currentIndex + index));
+                            return true;
+                        }
                     }
 
                     currentIndex += list.Count;
@@ -187,18 +196,19 @@ namespace phirSOFT.Applications.MusicStand.Core
             {
                 if (singlenode)
                 {
-                    if (_comparer.Equals((T) content, item))
+                    if (_comparer.Equals((T)content, item))
                         return index;
+                    ++index;
                 }
                 else
                 {
-                    int innerIndex = ((List<T>) content).IndexOf(item);
-                    if (innerIndex > 0)
+                    int innerIndex = ((List<T>)content).IndexOf(item);
+                    if (innerIndex >= 0)
                         return index + innerIndex;
                     index += content.Count;
                 }
 
-                ++index;
+
             }
 
             return -1;
@@ -230,17 +240,19 @@ namespace phirSOFT.Applications.MusicStand.Core
             if (node.Value.SingleNode || node.Value.Content.Count == 1)
             {
                 if (node.Value.SingleNode)
-                    RemoveChild((IFlattenable<T>) node.Value.Content);
+                    RemoveChild((IFlattenable<T>)node.Value.Content);
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
-                    node.Value.SingleNode ? (T) node.Value.Content : node.Value.Content[index: 0], index));
+                    node.Value.SingleNode ? (T)node.Value.Content : node.Value.Content[index: 0], index));
                 _items.Remove(node);
             }
             else
             {
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
                     node.Value.Content[index - nodeIndex], index));
-                ((List<T>) node.Value.Content).RemoveAt(index - nodeIndex);
+                ((List<T>)node.Value.Content).RemoveAt(index - nodeIndex);
             }
+
+            Count--;
         }
 
         public T this[int index]
@@ -249,7 +261,7 @@ namespace phirSOFT.Applications.MusicStand.Core
             {
                 (int nodeIndex, LinkedListNode<(bool SingleNode, IReadOnlyList<T> Content)> node) =
                     FindContainingNode(index);
-                return node.Value.SingleNode ? (T) node.Value.Content : node.Value.Content[index - nodeIndex];
+                return node.Value.SingleNode ? (T)node.Value.Content : node.Value.Content[index - nodeIndex];
             }
             set
             {
@@ -258,8 +270,8 @@ namespace phirSOFT.Applications.MusicStand.Core
                 T oldValue;
                 if (node.Value.SingleNode)
                 {
-                    oldValue = (T) node.Value.Content;
-                    RemoveChild((IFlattenable<T>) oldValue);
+                    oldValue = (T)node.Value.Content;
+                    RemoveChild((IFlattenable<T>)oldValue);
                     if (value is IFlattenable<T> flattenable)
                     {
                         AddChild(flattenable);
@@ -267,23 +279,23 @@ namespace phirSOFT.Applications.MusicStand.Core
                     }
                     else if (!node.Previous?.Value.SingleNode ?? false)
                     {
-                        ((List<T>) node.Previous.Value.Content).Add(value);
+                        ((List<T>)node.Previous.Value.Content).Add(value);
                         _items.Remove(node);
                     }
                     else if (!node.Next?.Value.SingleNode ?? false)
                     {
-                        ((List<T>) node.Next.Value.Content).Insert(index: 0, value);
+                        ((List<T>)node.Next.Value.Content).Insert(index: 0, value);
                         _items.Remove(node);
                     }
                     else
                     {
-                        node.Value = (false, new List<T> {value});
+                        node.Value = (false, new List<T> { value });
                     }
                 }
                 // required to scope flattenable
                 else
                 {
-                    var currentNodeItems = (List<T>) node.Value.Content;
+                    var currentNodeItems = (List<T>)node.Value.Content;
                     oldValue = currentNodeItems[index - nodeIndex];
                     if (value is IFlattenable<T> flattenable)
                     {
@@ -345,11 +357,11 @@ namespace phirSOFT.Applications.MusicStand.Core
 
         private void MonitorableChildChanged(object sender, EventArgs e)
         {
-            var monitor = (IMonitorChildren) sender;
+            var monitor = (IMonitorChildren)sender;
             if (monitor.CanMonitorAllChildren)
             {
                 monitor.CollectionChanged += MonitoredChildChanged;
-                _cachedChildrenCount = _cachedChildrenCount + ((IFlattenable<T>) sender).FlatCount;
+                _cachedChildrenCount = _cachedChildrenCount + ((IFlattenable<T>)sender).FlatCount;
             }
             else
             {
@@ -380,11 +392,11 @@ namespace phirSOFT.Applications.MusicStand.Core
                 FindContainingNode(index);
 
             if (nodeIndex == index && (!node.Previous?.Value.SingleNode ?? false))
-                ((List<T>) node.Previous.Value.Content).Add(item);
+                ((List<T>)node.Previous.Value.Content).Add(item);
             else if (nodeIndex < index)
-                ((List<T>) node.Value.Content).Insert(index - nodeIndex, item);
+                ((List<T>)node.Value.Content).Insert(index - nodeIndex, item);
             else
-                _items.AddBefore(node, (false, new List<T> {item}));
+                _items.AddBefore(node, (false, new List<T> { item }));
         }
 
         private void InsertInternal(int index, IFlattenable<T> item)
@@ -395,7 +407,7 @@ namespace phirSOFT.Applications.MusicStand.Core
 
             if (nodeIndex < index)
             {
-                var currentNodeItems = (List<T>) node.Value.Content;
+                var currentNodeItems = (List<T>)node.Value.Content;
                 int splitIndex = index - nodeIndex;
                 int moveCount = currentNodeItems.Count - splitIndex;
 
