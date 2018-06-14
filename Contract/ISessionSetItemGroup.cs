@@ -9,7 +9,7 @@ namespace phirSOFT.Applications.MusicStand.Contract
     /// <summary>
     /// Provies a logical container to organize <see cref="ISessionSetItem"/>s in a hirachial way.
     /// </summary>
-    public interface ISessionSetItemGroup : ISessionSetItem, IList<ISessionSetItem>
+    public interface ISessionSetItemGroup : ISessionSetItem, IList<ISessionSetItem>, IFlattenable<ISessionSetItem>
     {
     }
 }
