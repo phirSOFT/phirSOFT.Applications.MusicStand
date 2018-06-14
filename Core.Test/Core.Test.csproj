@@ -37,6 +37,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FlattenableListTests.cs" />
     <Compile Include="Mocks\FlattenableLeaf.cs" />
     <Compile Include="Mocks\FlattenableMock.cs" />
     <Compile Include="Mocks\INode.cs" />
