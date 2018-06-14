@@ -21,12 +21,15 @@ namespace phirSOFT.Applications.MusicStand.Core.Test
         }
 
         [Test()]
-        public void AddTest([Random(10, 100, 3)]int count,[Random(10)] int seed)
+        public void AddTest(
+            [Random(min: 10, max: 100, count: 3)]int count,
+            [Random(count: 10)] int seed
+            )
         {
             var list = new FlattenableList<INode<int>>();
             var rnd = new Random(seed);
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 int number = rnd.Next();
                 list.Add(new FlattenableLeaf<int>(number));
