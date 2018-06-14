@@ -20,10 +20,18 @@ namespace phirSOFT.Applications.MusicStand.Core.Test
             Assert.Fail();
         }
 
-        [Test]
-        public void AddTest()
+        [Test()]
+        public void AddTest([Random(10, 100, 3)]int count,[Random(10)] int seed)
         {
-            Assert.Fail();
+            var list = new FlattenableList<INode<int>>();
+            var rnd = new Random(seed);
+
+            for (int i = 0; i < count; i++)
+            {
+                int number = rnd.Next();
+                list.Add(new FlattenableLeaf<int>(number));
+                Assert.AreEqual(number, list[i].Value);
+            }
         }
 
         [Test()]
