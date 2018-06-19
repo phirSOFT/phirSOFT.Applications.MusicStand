@@ -11,10 +11,6 @@ namespace phirSOFT.Applications.MusicStand.Contract
     /// </summary>
     public interface ISessionSet : IList<ISessionSetItem>, IFlattenable<ISessionSetItem>
     {
-        /// <summary>
-        /// Returns a flatten view of the session set.
-        /// </summary>
-        /// <returns>A readonly collection that maps to the flatten view.</returns>
-        IReadOnlyList<ISessionSetItem> GetFlatView();
+
     }
 }
