@@ -46,6 +46,7 @@
     <Compile Include="ISessionSetItem.cs" />
     <Compile Include="ISessionSetItemGroup.cs" />
     <Compile Include="ISessionSetNavigator.cs" />
+    <Compile Include="ISessionSetProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
