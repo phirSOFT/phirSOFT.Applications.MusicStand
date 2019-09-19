@@ -3,8 +3,7 @@ using System.IO;
 using System.Reflection;
 using JetBrains.Annotations;
 using Nito.AsyncEx;
-using Nito.AsyncEx.Synchronous;
-using phirSOFT.SettingsService;
+using phirSOFT.SettingsService.Abstractions;
 using phirSOFT.SettingsService.Json;
 using phirSOFT.SettingsService.Unity;
 using Prism.Ioc;
@@ -18,9 +17,9 @@ namespace phirSOFT.Applications.MusicStand.Core
     public class SettingsModule : IModule
     {
         private readonly ILoggerFacade _loggerFacade;
-        private readonly IUnityContainer _container;
+        private readonly IContainerExtension<IUnityContainer> _container;
 
-        public SettingsModule(ILoggerFacade loggerFacade, IUnityContainer container)
+        public SettingsModule(ILoggerFacade loggerFacade, IContainerExtension<IUnityContainer> container)
         {
             _loggerFacade = loggerFacade;
             _container = container;
@@ -29,7 +28,7 @@ namespace phirSOFT.Applications.MusicStand.Core
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             _loggerFacade.Log("Registring settings extensions.", Category.Info, Priority.None);
-            _container.AddNewExtension<SettingsServiceContainerExtension>();
+            _container.Instance.AddNewExtension<SettingsServiceContainerExtension>();
 
             string settingsPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -41,7 +40,7 @@ namespace phirSOFT.Applications.MusicStand.Core
 
             _loggerFacade.Log("Creating json settings service.", Category.Info, Priority.None);
             _loggerFacade.Log($"Loading settings from \"{settingsPath}\"", Category.Debug, Priority.None);
-            ISettingsService settingsService = AsyncContext.Run(() => JsonSettingsService.Create(settingsPath));
+            ISettingsService settingsService = AsyncContext.Run(() => JsonSettingsService.CreateAsync(settingsPath));
             _loggerFacade.Log("Settings loaded", Category.Info, Priority.None);
 
             containerRegistry.RegisterInstance(settingsService);
