@@ -6,4 +6,7 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="phirSOFT.SettingsService.Abstractions" Version="0.2.3" />
+  </ItemGroup>
 </Project>
