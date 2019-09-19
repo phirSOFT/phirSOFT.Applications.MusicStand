@@ -1,14 +1,16 @@
 ﻿using System;
+using Common.Logging;
 using NLog;
 using Prism.Logging;
+using LogLevel = Common.Logging.LogLevel;
 
 namespace phirSOFT.Applications.MusicStand
 {
     public class NLogLoggerFacade : ILoggerFacade
     {
-        private readonly ILogger _logger;
+        private readonly ILog _logger;
 
-        public NLogLoggerFacade(ILogger logger)
+        public NLogLoggerFacade(ILog logger)
         {
             _logger = logger;
         }
@@ -16,27 +18,27 @@ namespace phirSOFT.Applications.MusicStand
 
         public void Log(string message, Category category, Priority priority)
         {
-            LogLevel level;
+            Action<object> logCallback;
 
             switch (category)
             {
                 case Category.Debug:
-                    level = priority == Priority.Low ? LogLevel.Trace : LogLevel.Debug;
+                    logCallback = priority == Priority.Low ? (Action<object>) _logger.Trace : _logger.Debug;
                     break;
                 case Category.Exception:
-                    level = priority == Priority.High ? LogLevel.Fatal : LogLevel.Error;
+                    logCallback = priority == Priority.High ? (Action<object>)_logger.Fatal : _logger.Error;
                     break;
                 case Category.Info:
-                    level = LogLevel.Info;
+                    logCallback = _logger.Info;
                     break;
                 case Category.Warn:
-                    level = LogLevel.Warn;
+                    logCallback = _logger.Info;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(category), category, message: null);
             }
 
-            _logger.Log(level, message);
+            logCallback.Invoke(message);
         }
     }
 }

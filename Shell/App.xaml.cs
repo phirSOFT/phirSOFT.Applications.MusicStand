@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using Common.Logging.Unity;
 using Fluent;
 using Nito.AsyncEx;
 using phirSOFT.Applications.MusicStand.Core;
@@ -90,14 +91,14 @@ namespace phirSOFT.Applications.MusicStand
             _manager.Shutdown();
             base.OnExit(e);
         }
-
+        
         protected override IContainerExtension CreateContainerExtension()
         {
             IContainerExtension containerExtension = base.CreateContainerExtension();
-            ((IContainerProvider) containerExtension).GetContainer()
-                .AddNewExtension<LogCreation>();
+            IUnityContainer unityContainer = ((IContainerProvider) containerExtension).GetContainer();
+            unityContainer.AddNewExtension<CommonLoggingExtension>();
 
-            return new FilteredUnityContainer<IUnityContainer>((IContainerExtension<IUnityContainer>) containerExtension);
+            return containerExtension;
         }
     }
 
