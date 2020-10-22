@@ -8,7 +8,7 @@
     <PackageReference Include="Fluent.Ribbon" Version="7.0.0" />
     <PackageReference Include="phirSOFT.SettingsService.Json" Version="0.2.2" />
     <PackageReference Include="phirSOFT.SettingsService.Unity" Version="0.1.0" />
-    <PackageReference Include="Prism.Unity" Version="7.2.0.1367" />
+    <PackageReference Include="Prism.Unity" Version="8.0.0.1909" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Contract\Contract.csproj" />
