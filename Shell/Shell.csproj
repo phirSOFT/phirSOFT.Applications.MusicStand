@@ -9,6 +9,6 @@
     <PackageReference Include="Common.Logging.NLog444" Version="3.4.1" />
     <PackageReference Include="Common.Logging.Unity" Version="1.0.0" />
     <PackageReference Include="phirSOFT.FluentPrismAdapters" Version="0.1.0" />
-    <PackageReference Include="phirSOFT.SingleInstanceManager" Version="0.1.4" />
+    <PackageReference Include="phirSOFT.SingleInstanceManager" Version="0.2.0" />
   </ItemGroup>
 </Project>
